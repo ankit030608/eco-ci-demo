@@ -1,3 +1,4 @@
+
 name: Eco CI Demo
 
 on:
@@ -5,11 +6,20 @@ on:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  actions: read
+
 jobs:
   eco-ci:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Start Eco-CI Measurement
+        uses: green-coding-solutions/eco-ci-energy-estimation@v5
+        with:
+          task: start-measurement
+
       - name: Checkout Repository
         uses: actions/checkout@v4
 
@@ -20,3 +30,14 @@ jobs:
 
       - name: Run Application
         run: python app.py
+
+      - name: Measure Energy Consumption
+        uses: green-coding-solutions/eco-ci-energy-estimation@v5
+        with:
+          task: get-measurement
+          label: "Python Application Execution"
+
+      - name: Display Eco-CI Results
+        uses: green-coding-solutions/eco-ci-energy-estimation@v5
+        with:
+          task: display-results
